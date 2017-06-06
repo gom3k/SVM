@@ -1,0 +1,11 @@
+@relation 'Nowa tablica'
+
+@attribute Numeryczny numeric
+@attribute Symboliczny {tak,nie}
+@attribute Tekstowy string
+
+@data
+1,tak,Ala0
+2,tak,Ala1
+3,tak,Ala2
+4,tak,Ala3

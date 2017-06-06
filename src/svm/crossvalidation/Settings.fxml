@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="168.0" prefWidth="482.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="svm.crossvalidation.SettingsController">
+    <children>
+        <Label layoutX="16.0" layoutY="14.0" text="Ustawienie klasyfikatora" textFill="#57a3ff">
+            <font>
+                <Font name="Comic Sans MS" size="39.0" />
+            </font>
+        </Label>
+      <TextField fx:id="numberoffolds" layoutX="109.0" layoutY="116.0" prefHeight="25.0" prefWidth="33.0" text="10" />
+      <Label layoutX="24.0" layoutY="120.0" text="Liczba fold'ów" />
+      <RadioButton fx:id="wyborA" layoutX="209.0" layoutY="84.0" mnemonicParsing="false" selected="true" text="Próbek losowy">
+         <toggleGroup>
+            <ToggleGroup fx:id="probek" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="wyborB" layoutX="24.0" layoutY="84.0" mnemonicParsing="false" text="Próbek deterministyczny" toggleGroup="$probek" />
+      <Button fx:id="btnSaveSettings" layoutX="418.0" layoutY="129.0" mnemonicParsing="false" onAction="#saveSettings" text="Zapisz" />
+    </children>
+</AnchorPane>

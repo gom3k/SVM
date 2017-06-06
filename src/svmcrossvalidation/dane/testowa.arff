@@ -1,0 +1,13 @@
+@RELATION testowa
+
+@ATTRIBUTE Imie		string
+@ATTRIBUTE Wzrost	real
+@ATTRIBUTE Waga 	real
+@ATTRIBUTE Krepy 	{tak,nie}
+@ATTRIBUTE DECYZJA 	{slaby,silny}
+
+@DATA
+Robert,180,80,nie,slaby
+Marek,175,89,tak,slaby
+Piotrek,190,85,nie,silny
+Maciek,172,95,tak,silny

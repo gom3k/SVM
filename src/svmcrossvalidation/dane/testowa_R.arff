@@ -1,0 +1,10 @@
+@relation 'testowa-weka.filters.unsupervised.attribute.Remove-R1,4-5'
+
+@attribute Wzrost numeric
+@attribute Waga numeric
+
+@data
+180,80
+175,89
+190,85
+172,95
