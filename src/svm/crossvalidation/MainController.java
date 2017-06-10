@@ -1,5 +1,9 @@
 package svm.crossvalidation;
 
+import weka.classifiers.functions.Logistic;
+import weka.classifiers.functions.supportVector.Kernel;
+import weka.classifiers.functions.supportVector.PolyKernel;
+import weka.classifiers.functions.supportVector.SMOset;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -19,12 +23,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.functions.supportVector.NormalizedPolyKernel;
+import weka.classifiers.functions.supportVector.Puk;
+import weka.classifiers.functions.supportVector.RBFKernel;
+import weka.classifiers.functions.supportVector.StringKernel;
 import weka.core.Instances;
+import weka.core.SelectedTag;
+import weka.core.Tag;
 
 /**
  *
@@ -38,6 +50,12 @@ public class MainController implements Initializable {
     private Label labelIloscWczytanych;
     @FXML
     private TextArea poleWyniku;
+    @FXML
+    private RadioButton wyborA;
+    @FXML
+    private RadioButton wyborB;
+    @FXML
+    private TextField numberoffolds;
 
     private File crossvalidationDataFile;
     private Stage stage;
@@ -84,28 +102,79 @@ public class MainController implements Initializable {
             Instances data = crossvalidationInstances;
             data.setClassIndex(data.numAttributes() - 1);
 
-//            String[] options = {"-M"};
             SMO smo = new SMO();
-//            smo.setOptions(options);
+            
+            //C
+            if(SettingsController.getC==null){
+                smo.setC(1);
+            }else{
+                smo.setC(Double.parseDouble(SettingsController.getC));
+            }
+            
+            //Filder Mode
+            SelectedTag tag = smo.getFilterType();
+            Tag[] tags = tag.getTags();
+            Tag normalize = null;
+            Tag standarize = null;
+            Tag disabled = null;
+            for(Tag tag1 : tags) {
+                if(tag1.getReadable().equals("Normalize training data"))
+                    normalize = tag1;
+                else if(tag1.getReadable().equals("Standardize training data"))
+                    standarize = tag1;
+                else if(tag1.getReadable().equals("No normalization/standardization"))
+                    disabled = tag1;
+            }
+            switch (SettingsController.getFilterMode) {
+                case "Wyłączony":
+                    smo.setFilterType(new SelectedTag(disabled.getID(), tags));
+                    break;
+                case "Normalizuj":
+                    smo.setFilterType(new SelectedTag(normalize.getID(), tags));
+                    break;
+                case "Standaryzuj":
+                    smo.setFilterType(new SelectedTag(standarize.getID(), tags));
+                    break;
+            }
+            //Funkcja Kernel
+            switch (SettingsController.getFunkcjaKernel) {
+                case "Puk":
+                    smo.setKernel(new Puk());
+                    break;
+                case "RBFKernel":
+                    smo.setKernel(new RBFKernel());
+                    break;
+                case "PolyKernel":
+                    smo.setKernel(new PolyKernel());
+                    break;
+                case "StringKernel":
+                    smo.setKernel(new StringKernel());
+                case "NormalizedPolyKernel":
+                    smo.setKernel(new NormalizedPolyKernel());
+                    break;
+            }
+
             smo.buildClassifier(data);
 
             Evaluation eval = new Evaluation(data);
             //Cross-validation
-            if (SettingsController.getWyborA) {
-                eval.crossValidateModel(smo, data, Integer.parseInt(SettingsController.getFolds), new Random()); //Wybor probek losowy
+            if (wyborA.isSelected()) {
+                eval.crossValidateModel(smo, data, Integer.parseInt(numberoffolds.getText()), new Random(1)); //Wybor probek deterministyczny
             }
-            if (SettingsController.getWyborB) {
-                eval.crossValidateModel(smo, data, Integer.parseInt(SettingsController.getFolds), new Random(1)); //Wybor probek deterministyczny
+            if (wyborB.isSelected()) {
+                eval.crossValidateModel(smo, data, Integer.parseInt(numberoffolds.getText()), new Random()); //Wybor probek losowy
             }
 
             StringBuilder builder = new StringBuilder();
             try {
-                builder.append("Liczba fold'ów: " + SettingsController.getFolds + "\n");
-                if (SettingsController.getWyborA) {
-                    builder.append("Wybrałeś próbkę losowy.\n\n");
-                }
-                if (SettingsController.getWyborB) {
+                builder.append("Liczba fold'ów: " + numberoffolds.getText() + "\n");
+                builder.append("Filder mode: " + SettingsController.getFilterMode + "\n");
+                builder.append("Funkcja kernel: " + SettingsController.getFunkcjaKernel + "\n");
+                if (wyborA.isSelected()) {
                     builder.append("Wybrałeś próbkę deterministyczny.\n\n");
+                }
+                if (wyborB.isSelected()) {
+                    builder.append("Wybrałeś próbkę losowy.\n\n");
                 }
 
                 builder.append(eval.toSummaryString("Wyniki dla metody CV:", false));
@@ -131,9 +200,9 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
         try {
-            Integer.parseInt(SettingsController.getFolds);
+            Integer.parseInt(numberoffolds.getText());
         } catch (Exception e) {
-            poleWyniku.setText("Proszę podać tylko liczbowe w polu fold'ów!");
+            poleWyniku.setText("Proszę ustawić dokładnie w ustawieniach Klasyfikatora");
         }
     }
 
@@ -167,7 +236,7 @@ public class MainController implements Initializable {
     }
 
     public void aboutProgram() {
-        String s = "Jest to program obliczający klasyfikatora SVM (SMO) metodą Cross-Validation. \n\nMade by Kamil Dudek. ";
+        String s = "Program służący do uczenia klasyfikatora SVM (SMO) metodą Cross-Validation i obliczania wyników klasyfikacji na danych wejściowych wykonany w technologii JavaFXML. \n\nMade by Kamil Dudek. ";
         Alert alert = new Alert(Alert.AlertType.INFORMATION, s, ButtonType.OK);
         alert.setTitle("About");
         alert.setHeaderText("O programie.");
@@ -194,6 +263,6 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+
     }
 }
