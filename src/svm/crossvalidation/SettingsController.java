@@ -17,8 +17,11 @@ import javafx.stage.Stage;
 public class SettingsController implements Initializable {
 
     public static String getC;
+    public static String getDebugMode;
+    public static String getEpsilon;
     public static String getFilterMode;
     public static String getFunkcjaKernel;
+    public static String getMiejscepoprzecinku;
 
     @FXML
     private Button btnSaveSettings;
@@ -26,15 +29,24 @@ public class SettingsController implements Initializable {
     @FXML
     private TextField c;
     @FXML
+    private ChoiceBox debugmode;
+    @FXML
+    private TextField epsilon;
+    @FXML
     private ChoiceBox filtermode;
     @FXML
     private ChoiceBox funkcjakernel;
+    @FXML
+    private TextField miejscepoprzecinku;
 
     @FXML
     private void saveSettings(ActionEvent event) {
         getC = c.getText();
+        getDebugMode = (String) debugmode.getValue();
+        getEpsilon = epsilon.getText();
         getFilterMode = (String) filtermode.getValue();
         getFunkcjaKernel = (String) funkcjakernel.getValue();
+        getMiejscepoprzecinku = miejscepoprzecinku.getText();
 
         Stage stageCloseWindow = (Stage) btnSaveSettings.getScene().getWindow();
         stageCloseWindow.close();
@@ -42,9 +54,12 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        filtermode.getItems().add("Wyłączony");
-        filtermode.getItems().add("Normalizuj");
+        debugmode.getItems().add("False");
+        debugmode.getItems().add("True");
+        debugmode.getSelectionModel().select("False");
         filtermode.getItems().add("Standaryzuj");
+        filtermode.getItems().add("Normalizuj");
+        filtermode.getItems().add("Wyłączony");
         filtermode.getSelectionModel().select("Standaryzuj");
         funkcjakernel.getItems().add("Puk");
         funkcjakernel.getItems().add("RBFKernel");

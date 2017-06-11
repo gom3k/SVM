@@ -1,0 +1,31 @@
+@relation zakupy
+
+@attribute id_trans numeric   
+@attribute orzeszki {nie,tak}
+@attribute piwo {nie,tak}
+@attribute kielbasa {nie,tak}
+@attribute ser {nie,tak}
+@attribute chipsy {nie,tak}
+@attribute ketchup {nie,tak}
+
+@data
+1, nie, nie, tak, nie, tak, nie
+2, nie, tak, nie, tak, tak, nie
+3, nie, tak, tak, nie, tak, tak
+4, nie, nie, nie, nie, nie, nie
+5, tak, tak, nie, tak, nie, nie
+6, nie, tak, tak, nie, tak, tak
+7, tak, nie, tak, tak, nie, tak
+8, nie, tak, tak, tak, tak, nie
+9, nie, nie, tak, nie, nie, tak
+10, tak, tak, tak, nie, tak, nie
+11, nie, nie, tak, tak, nie, tak
+12, tak, tak, nie, tak, tak, tak
+13, tak, nie, tak, tak, tak, tak
+14, nie, tak, tak, tak, tak, nie
+15, nie, tak, tak, tak, tak, tak
+16, tak, nie, nie, tak, nie, nie
+17, nie, nie, tak, nie, nie, tak
+18, nie, tak, tak, tak, tak, tak
+19, tak, tak, tak, nie, tak, tak
+20, nie, nie, tak, nie, nie, tak

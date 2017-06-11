@@ -21,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -56,31 +57,30 @@ public class MainController implements Initializable {
     private RadioButton wyborB;
     @FXML
     private TextField numberoffolds;
+    @FXML
+    private Button btnShow;
 
     private File crossvalidationDataFile;
     private Stage stage;
-    private Instances crossvalidationInstances = null;
+    Instances crossvalidationInstances = null;
     private StringBuilder WynikString;
-
-    private void Load(ActionEvent event) {
-        String extension;
-        int dot = crossvalidationDataFile.getName().lastIndexOf(".");
-        extension = crossvalidationDataFile.getName().substring(dot + 1, crossvalidationDataFile.getName().length());
-        LoadInstances loadInstances = new LoadInstances(extension).invoke(crossvalidationDataFile);
-        if (loadInstances.is()) {
-            return;
-        }
-        crossvalidationInstances = loadInstances.getData();
-    }
 
     @FXML
     private void btnPrzegladajAction(ActionEvent event) {
         try {
             crossvalidationDataFile = openFile();
             labelNazwaPliku.setText("Wybrano plik " + crossvalidationDataFile.getName() + " do wczytania.");
-            Load(event);
+            String extension;
+            int dot = crossvalidationDataFile.getName().lastIndexOf(".");
+            extension = crossvalidationDataFile.getName().substring(dot + 1, crossvalidationDataFile.getName().length());
+            WczytajDane loadInstances = new WczytajDane(extension).invoke(crossvalidationDataFile);
+            if (loadInstances.is()) {
+                return;
+            }
+            crossvalidationInstances = loadInstances.getData();
             labelIloscWczytanych.setText("Wczytano " + crossvalidationInstances.numInstances() + " obiektów.");
             poleWyniku.setText("Już jest wczytany plik, możesz uruchomić klasyfikator.");
+            btnShow.setVisible(true);
         } catch (Exception e) {
             poleWyniku.setText("Co się stało? Wczytaj jeszcze raz!");
         }
@@ -103,37 +103,44 @@ public class MainController implements Initializable {
             data.setClassIndex(data.numAttributes() - 1);
 
             SMO smo = new SMO();
-            
+
             //C
-            if(SettingsController.getC==null){
-                smo.setC(1);
-            }else{
-                smo.setC(Double.parseDouble(SettingsController.getC));
+            smo.setC(Double.parseDouble(SettingsController.getC));
+            //Debug
+            switch (SettingsController.getDebugMode) {
+                case "False":
+                    smo.setDebug(false);
+                    break;
+                case "True":
+                    smo.setDebug(true);
+                    break;
             }
-            
+            //Epsilon
+            smo.setEpsilon(Double.parseDouble(SettingsController.getEpsilon));
             //Filder Mode
-            SelectedTag tag = smo.getFilterType();
-            Tag[] tags = tag.getTags();
+            SelectedTag selectedtag = smo.getFilterType();
+            Tag[] tagi = selectedtag.getTags();
             Tag normalize = null;
             Tag standarize = null;
             Tag disabled = null;
-            for(Tag tag1 : tags) {
-                if(tag1.getReadable().equals("Normalize training data"))
-                    normalize = tag1;
-                else if(tag1.getReadable().equals("Standardize training data"))
-                    standarize = tag1;
-                else if(tag1.getReadable().equals("No normalization/standardization"))
-                    disabled = tag1;
+            for (Tag tag : tagi) {
+                if (tag.getReadable().equals("Normalize training data")) {
+                    normalize = tag;
+                } else if (tag.getReadable().equals("Standardize training data")) {
+                    standarize = tag;
+                } else if (tag.getReadable().equals("No normalization/standardization")) {
+                    disabled = tag;
+                }
             }
             switch (SettingsController.getFilterMode) {
-                case "Wyłączony":
-                    smo.setFilterType(new SelectedTag(disabled.getID(), tags));
-                    break;
                 case "Normalizuj":
-                    smo.setFilterType(new SelectedTag(normalize.getID(), tags));
+                    smo.setFilterType(new SelectedTag(normalize.getID(), tagi));
                     break;
                 case "Standaryzuj":
-                    smo.setFilterType(new SelectedTag(standarize.getID(), tags));
+                    smo.setFilterType(new SelectedTag(standarize.getID(), tagi));
+                    break;
+                case "Wyłączony":
+                    smo.setFilterType(new SelectedTag(disabled.getID(), tagi));
                     break;
             }
             //Funkcja Kernel
@@ -149,13 +156,15 @@ public class MainController implements Initializable {
                     break;
                 case "StringKernel":
                     smo.setKernel(new StringKernel());
+                    break;
                 case "NormalizedPolyKernel":
                     smo.setKernel(new NormalizedPolyKernel());
                     break;
             }
+            //Liczba miejsc po przecinku
+            smo.setNumDecimalPlaces(Integer.parseInt(SettingsController.getMiejscepoprzecinku));
 
             smo.buildClassifier(data);
-
             Evaluation eval = new Evaluation(data);
             //Cross-validation
             if (wyborA.isSelected()) {
@@ -167,25 +176,14 @@ public class MainController implements Initializable {
 
             StringBuilder builder = new StringBuilder();
             try {
-                builder.append("Liczba fold'ów: " + numberoffolds.getText() + "\n");
-                builder.append("Filder mode: " + SettingsController.getFilterMode + "\n");
-                builder.append("Funkcja kernel: " + SettingsController.getFunkcjaKernel + "\n");
-                if (wyborA.isSelected()) {
-                    builder.append("Wybrałeś próbkę deterministyczny.\n\n");
-                }
-                if (wyborB.isSelected()) {
-                    builder.append("Wybrałeś próbkę losowy.\n\n");
-                }
-
-                builder.append(eval.toSummaryString("Wyniki dla metody CV:", false));
-                builder.append("\n\n");
-                builder.append("Liczba wszystkich obiektow testowanych = " + eval.numInstances() + "\n");
-                builder.append("Liczba poprawnie sklasyfikowanych = " + eval.correct() + "\n");
-                builder.append("Procent poprawnie sklasyfikowanych = " + eval.pctCorrect() + "\n");
-                builder.append("Liczba niepoprawnie sklasyfikowanych = " + eval.incorrect() + "\n");
-                builder.append("Procent niepoprawnie sklasyfikowanych = " + eval.pctIncorrect() + "\n");
-                builder.append("Liczba niesklasyfikowanych = " + eval.unclassified() + "\n");
-                builder.append("Procent niesklasyfikowanych = " + eval.pctUnclassified() + "\n\n");
+                builder.append(eval.toSummaryString("Wyniki dla metody CV:", false)+"\n\n");
+//                builder.append("Liczba wszystkich obiektow testowanych = " + eval.numInstances() + "\n");
+//                builder.append("Liczba poprawnie sklasyfikowanych = " + eval.correct() + "\n");
+//                builder.append("Procent poprawnie sklasyfikowanych = " + eval.pctCorrect() + "\n");
+//                builder.append("Liczba niepoprawnie sklasyfikowanych = " + eval.incorrect() + "\n");
+//                builder.append("Procent niepoprawnie sklasyfikowanych = " + eval.pctIncorrect() + "\n");
+//                builder.append("Liczba niesklasyfikowanych = " + eval.unclassified() + "\n");
+//                builder.append("Procent niesklasyfikowanych = " + eval.pctUnclassified() + "\n\n");
                 builder.append(eval.toClassDetailsString("Klasy decyzyjne:") + "\n\n");
 //            builder.append(eval.toCumulativeMarginDistributionString()+"\n\n");
                 builder.append(eval.toMatrixString("Macierz:") + "\n\n");
@@ -212,9 +210,9 @@ public class MainController implements Initializable {
             chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik tekstowy .txt", "*.txt"));
             File file = chooser.showSaveDialog(stage);
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.write(WynikString.toString());
-            writer.close();
+            BufferedWriter savein = new BufferedWriter(new FileWriter(file));
+            savein.write(WynikString.toString());
+            savein.close();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Błąd");
@@ -245,6 +243,28 @@ public class MainController implements Initializable {
 //            System.out.println("Czas uzywania programu w sekundach: ");
 //            Platform.exit(); 
 //        }
+    }
+
+    public void showDane() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ShowDane.fxml"));
+            ShowDaneController controller = new ShowDaneController(crossvalidationInstances);
+            loader.setController(controller);
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.setTitle("Dane " + crossvalidationDataFile.getName());
+            stage.show();
+        } catch (IOException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Błąd");
+            alert.setHeaderText("Błąd wczytywania danych.");
+            alert.setContentText("Proszę najpierw wczytać plik.");
+            alert.showAndWait();
+        }
     }
 
     public void settingklasyfikator() {
