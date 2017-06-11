@@ -309,7 +309,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public void settingklasyfikator() {
+    public void settingKlasyfikator() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("Settings.fxml"));
             Stage stage = new Stage();

@@ -44,7 +44,7 @@
         <Label fx:id="labelIloscWczytanych" layoutX="152.0" layoutY="130.0" minHeight="16" minWidth="69" text="Brak obiektów!" />
         <Button fx:id="btnPrzegladaj" layoutX="363.0" layoutY="126.0" onAction="#btnPrzegladaj" prefHeight="25.0" prefWidth="86.0" text="Przeglądaj" />
         <Button fx:id="btnShow" layoutX="455.0" layoutY="126.0" mnemonicParsing="false" onAction="#showDane" prefHeight="25.0" prefWidth="45.0" text="Show" visible="false" />
-        <Button fx:id="btnUstawienieKlasyfikatora" layoutX="286.0" layoutY="157.0" mnemonicParsing="false" onAction="#settingklasyfikator" text="Ustawienie klasyfikatora" visible="false">
+        <Button fx:id="btnUstawienieKlasyfikatora" layoutX="286.0" layoutY="157.0" mnemonicParsing="false" onAction="#settingKlasyfikator" text="Ustawienie klasyfikatora" visible="false">
             <graphic>
                 <ImageView fitHeight="17.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                     <image>
