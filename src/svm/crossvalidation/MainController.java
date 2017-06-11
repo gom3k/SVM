@@ -44,11 +44,13 @@ import weka.core.Tag;
  * @author Gomex
  */
 public class MainController implements Initializable {
-
+    
     @FXML
     private Label labelNazwaPliku;
     @FXML
     private Label labelIloscWczytanych;
+    @FXML
+    private Label labelLiczbafoldow;
     @FXML
     private TextArea poleWyniku;
     @FXML
@@ -59,6 +61,10 @@ public class MainController implements Initializable {
     private TextField numberoffolds;
     @FXML
     private Button btnShow;
+    @FXML
+    private Button btnUstawienieKlasyfikatora;
+    @FXML
+    private Button btnUruchomKlasyfikatora;
 
     private File crossvalidationDataFile;
     private Stage stage;
@@ -66,7 +72,7 @@ public class MainController implements Initializable {
     private StringBuilder WynikString;
 
     @FXML
-    private void btnPrzegladajAction(ActionEvent event) {
+    private void btnPrzegladaj(ActionEvent event) {
         try {
             crossvalidationDataFile = openFile();
             labelNazwaPliku.setText("Wybrano plik " + crossvalidationDataFile.getName() + " do wczytania.");
@@ -79,8 +85,9 @@ public class MainController implements Initializable {
             }
             crossvalidationInstances = loadInstances.getData();
             labelIloscWczytanych.setText("Wczytano " + crossvalidationInstances.numInstances() + " obiektów.");
-            poleWyniku.setText("Już jest wczytany plik, możesz uruchomić klasyfikator.");
+//            poleWyniku.setText("Już jest wczytany plik.");
             btnShow.setVisible(true);
+            btnUstawienieKlasyfikatora.setVisible(true);
         } catch (Exception e) {
             poleWyniku.setText("Co się stało? Wczytaj jeszcze raz!");
         }
@@ -104,8 +111,28 @@ public class MainController implements Initializable {
 
             SMO smo = new SMO();
 
+            //BatchSize
+            smo.setBatchSize(SettingsController.getBatchSize);
+            //BuildCalibrationModel
+            switch (SettingsController.getCaliModel) {
+                case "False":
+                    smo.setBuildCalibrationModels(false);
+                    break;
+                case "True":
+                    smo.setBuildCalibrationModels(true);
+                    break;
+            }
             //C
             smo.setC(Double.parseDouble(SettingsController.getC));
+            //ChecksTurnedOff <<----------- coś tu nie tak
+            switch (SettingsController.getChecksTurnedOff) {
+                case "False":
+                    smo.setChecksTurnedOff(false);
+                    break;
+                case "True":
+                    smo.setChecksTurnedOff(true);
+                    break;
+            }
             //Debug
             switch (SettingsController.getDebugMode) {
                 case "False":
@@ -113,6 +140,15 @@ public class MainController implements Initializable {
                     break;
                 case "True":
                     smo.setDebug(true);
+                    break;
+            }
+            //DoNotCheckCapabilities
+            switch (SettingsController.getdoNotCheckCapabilities) {
+                case "False":
+                    smo.setDoNotCheckCapabilities(false);
+                    break;
+                case "True":
+                    smo.setDoNotCheckCapabilities(true);
                     break;
             }
             //Epsilon
@@ -163,6 +199,12 @@ public class MainController implements Initializable {
             }
             //Liczba miejsc po przecinku
             smo.setNumDecimalPlaces(Integer.parseInt(SettingsController.getMiejscepoprzecinku));
+            //NumFolds
+            smo.setNumFolds(Integer.parseInt(SettingsController.getNumFolds));
+            //RandomSeed
+            smo.setRandomSeed(Integer.parseInt(SettingsController.getRandomSeed));
+            //Tolerancja Parameter
+            smo.setToleranceParameter(Double.parseDouble(SettingsController.getToleranceParameter));
 
             smo.buildClassifier(data);
             Evaluation eval = new Evaluation(data);
@@ -176,7 +218,7 @@ public class MainController implements Initializable {
 
             StringBuilder builder = new StringBuilder();
             try {
-                builder.append(eval.toSummaryString("Wyniki dla metody CV:", false)+"\n\n");
+                builder.append(eval.toSummaryString("Metoda Cross-Validation:", false) + "\n\n");
 //                builder.append("Liczba wszystkich obiektow testowanych = " + eval.numInstances() + "\n");
 //                builder.append("Liczba poprawnie sklasyfikowanych = " + eval.correct() + "\n");
 //                builder.append("Procent poprawnie sklasyfikowanych = " + eval.pctCorrect() + "\n");
@@ -200,11 +242,11 @@ public class MainController implements Initializable {
         try {
             Integer.parseInt(numberoffolds.getText());
         } catch (Exception e) {
-            poleWyniku.setText("Proszę ustawić dokładnie w ustawieniach Klasyfikatora");
+            poleWyniku.setText("Proszę ustawiać dokładnie w ustawieniach Klasyfikatora");
         }
     }
 
-    public void saveintxt() {
+    public void btnSaveInTxt() {
         try {
             FileChooser chooser = new FileChooser();
             chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik tekstowy .txt", "*.txt"));
@@ -276,6 +318,12 @@ public class MainController implements Initializable {
             stage.sizeToScene();
             stage.setTitle("Ustawienie klasyfikatora");
             stage.show();
+            
+            btnUruchomKlasyfikatora.setVisible(true);
+            labelLiczbafoldow.setVisible(true);
+            numberoffolds.setVisible(true);
+            wyborA.setVisible(true);
+            wyborB.setVisible(true);
         } catch (IOException ex) {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
         }

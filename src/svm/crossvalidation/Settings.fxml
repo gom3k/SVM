@@ -8,25 +8,39 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="438.0" prefWidth="482.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="svm.crossvalidation.SettingsController">
+<AnchorPane id="AnchorPane" prefHeight="546.0" prefWidth="482.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="svm.crossvalidation.SettingsController">
     <children>
         <Label layoutX="16.0" layoutY="14.0" text="Ustawienie klasyfikatora" textFill="#57a3ff">
             <font>
                 <Font name="Comic Sans MS" size="39.0" />
             </font>
         </Label>
-        <Label layoutX="40.0" layoutY="90.0" text="C:" />
-        <TextField fx:id="c" layoutX="175.0" layoutY="85.0" prefHeight="25.0" prefWidth="33.0" text="1" />
-        <Label layoutX="40.0" layoutY="125.0" text="Tryb debug:" />
-        <ChoiceBox fx:id="debugmode" layoutX="175.0" layoutY="120.0" prefWidth="150.0" />
-        <Label layoutX="40.0" layoutY="159.0" text="Epsilon:" />
-        <TextField fx:id="epsilon" layoutX="175.0" layoutY="155.0" prefHeight="25.0" prefWidth="62.0" text="1.0E-12" />
-        <Label layoutX="40.0" layoutY="196.0" text="Tryb filtrowania:" />
-        <ChoiceBox fx:id="filtermode" layoutX="175.0" layoutY="192.0" prefWidth="150.0" />
-        <Label layoutX="40.0" layoutY="233.0" text="Funkcja kernel:" />
-        <ChoiceBox fx:id="funkcjakernel" layoutX="175.0" layoutY="229.0" prefWidth="150.0" />
-        <Label layoutX="40.0" layoutY="268.0" text="Miejsce po przecinku" />
-        <TextField fx:id="miejscepoprzecinku" layoutX="175.0" layoutY="264.0" prefHeight="25.0" prefWidth="33.0" text="2" />
-        <Button fx:id="btnSaveSettings" layoutX="418.0" layoutY="229.0" mnemonicParsing="false" onAction="#saveSettings" text="Zapisz" />
+        <Label layoutX="50.0" layoutY="89.0" text="BatchSize:" />
+        <TextField fx:id="batchsize" layoutX="200.0" layoutY="85.0" prefHeight="25.0" prefWidth="60.0" text="100" />
+        <Label layoutX="50.0" layoutY="124.0" text="Calibration model:" />
+        <ChoiceBox fx:id="calimodel" layoutX="200.0" layoutY="120.0" prefHeight="25.0" prefWidth="120.0" />
+        <Label layoutX="50.0" layoutY="159.0" text="C:" />
+        <TextField fx:id="c" layoutX="200.0" layoutY="155.0" prefHeight="25.0" prefWidth="30.0" text="1.0" />
+        <Label layoutX="50.0" layoutY="194.0" text="Checks Turned Off:" />
+        <ChoiceBox fx:id="checksoff" layoutX="200.0" layoutY="190.0" prefHeight="25.0" prefWidth="120.0" />
+        <Label layoutX="50.0" layoutY="229.0" text="Tryb debug:" />
+        <ChoiceBox fx:id="debugmode" layoutX="200.0" layoutY="225.0" prefHeight="25.0" prefWidth="120.0" />
+        <Label layoutX="50.0" layoutY="264.0" prefHeight="17.0" prefWidth="150.0" text="DoNotCheckCapabilities:" />
+        <ChoiceBox fx:id="dontcheck" layoutX="200.0" layoutY="260.0" prefHeight="25.0" prefWidth="120.0" />
+        <Label layoutX="50.0" layoutY="299.0" text="Epsilon:" />
+        <TextField fx:id="epsilon" layoutX="200.0" layoutY="295.0" prefHeight="25.0" prefWidth="60.0" text="1.0E-12" />
+        <Label layoutX="50.0" layoutY="334.0" text="Tryb filtrowania:" />
+        <ChoiceBox fx:id="filtermode" layoutX="200.0" layoutY="330.0" prefHeight="25.0" prefWidth="120.0" />
+        <Label layoutX="50.0" layoutY="369.0" text="Funkcja kernel:" />
+        <ChoiceBox fx:id="funkcjakernel" layoutX="200.0" layoutY="365.0" prefHeight="25.0" prefWidth="120.0" />
+        <Label layoutX="50.0" layoutY="404.0" text="Miejsce po przecinku:" />
+        <TextField fx:id="miejscepoprzecinku" layoutX="200.0" layoutY="400.0" prefHeight="25.0" prefWidth="30.0" text="2" />
+        <Label layoutX="50.0" layoutY="439.0" text="NumFolds:" />
+        <TextField fx:id="numfolds" layoutX="200.0" layoutY="435.0" prefHeight="25.0" prefWidth="30.0" text="-1" />
+        <Label layoutX="50.0" layoutY="474.0" text="Losowanie Seed'ów:" />
+        <TextField fx:id="randomseed" layoutX="200.0" layoutY="470.0" prefHeight="25.0" prefWidth="30.0" text="1" />
+        <Label layoutX="50.0" layoutY="509.0" prefHeight="17.0" prefWidth="134.0" text="Tolerance Parameter:" />
+        <TextField fx:id="tolePara" layoutX="200.0" layoutY="505.0" prefHeight="25.0" prefWidth="60.0" text="0.001" />
+        <Button fx:id="btnSaveSettings" layoutX="416.0" layoutY="505.0" mnemonicParsing="false" onAction="#saveSettings" text="Zapisz" />
     </children>
 </AnchorPane>

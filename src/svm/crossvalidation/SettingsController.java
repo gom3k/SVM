@@ -16,20 +16,35 @@ import javafx.stage.Stage;
  */
 public class SettingsController implements Initializable {
 
+    public static String getBatchSize;
+    public static String getCaliModel;
     public static String getC;
+    public static String getChecksTurnedOff;
     public static String getDebugMode;
+    public static String getdoNotCheckCapabilities;
     public static String getEpsilon;
     public static String getFilterMode;
     public static String getFunkcjaKernel;
     public static String getMiejscepoprzecinku;
+    public static String getNumFolds;
+    public static String getRandomSeed;
+    public static String getToleranceParameter;
 
     @FXML
     private Button btnSaveSettings;
 
     @FXML
+    private TextField batchsize;
+    @FXML
+    private ChoiceBox calimodel;
+    @FXML
     private TextField c;
     @FXML
+    private ChoiceBox checksoff;
+    @FXML
     private ChoiceBox debugmode;
+    @FXML
+    private ChoiceBox dontcheck;
     @FXML
     private TextField epsilon;
     @FXML
@@ -38,25 +53,47 @@ public class SettingsController implements Initializable {
     private ChoiceBox funkcjakernel;
     @FXML
     private TextField miejscepoprzecinku;
+    @FXML
+    private TextField numfolds;
+    @FXML
+    private TextField randomseed;
+    @FXML
+    private TextField tolePara;
 
     @FXML
     private void saveSettings(ActionEvent event) {
+        getBatchSize = batchsize.getText();
+        getCaliModel = (String) calimodel.getValue();
         getC = c.getText();
+        getChecksTurnedOff = (String) checksoff.getValue();
         getDebugMode = (String) debugmode.getValue();
+        getdoNotCheckCapabilities = (String) dontcheck.getValue();
         getEpsilon = epsilon.getText();
         getFilterMode = (String) filtermode.getValue();
         getFunkcjaKernel = (String) funkcjakernel.getValue();
         getMiejscepoprzecinku = miejscepoprzecinku.getText();
-
+        getNumFolds = numfolds.getText();
+        getRandomSeed = randomseed.getText();
+        getToleranceParameter = tolePara.getText();
+        
         Stage stageCloseWindow = (Stage) btnSaveSettings.getScene().getWindow();
         stageCloseWindow.close();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        calimodel.getItems().add("False");
+        calimodel.getItems().add("True");
+        calimodel.getSelectionModel().select("False");
+        checksoff.getItems().add("False");
+        checksoff.getItems().add("True");
+        checksoff.getSelectionModel().select("False");
         debugmode.getItems().add("False");
         debugmode.getItems().add("True");
         debugmode.getSelectionModel().select("False");
+        dontcheck.getItems().add("False");
+        dontcheck.getItems().add("True");
+        dontcheck.getSelectionModel().select("False");
         filtermode.getItems().add("Standaryzuj");
         filtermode.getItems().add("Normalizuj");
         filtermode.getItems().add("Wyłączony");
