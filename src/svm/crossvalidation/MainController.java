@@ -1,9 +1,5 @@
 package svm.crossvalidation;
 
-import weka.classifiers.functions.Logistic;
-import weka.classifiers.functions.supportVector.Kernel;
-import weka.classifiers.functions.supportVector.PolyKernel;
-import weka.classifiers.functions.supportVector.SMOset;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,10 +27,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
-import weka.classifiers.functions.supportVector.NormalizedPolyKernel;
 import weka.classifiers.functions.supportVector.Puk;
 import weka.classifiers.functions.supportVector.RBFKernel;
+import weka.classifiers.functions.supportVector.PolyKernel;
 import weka.classifiers.functions.supportVector.StringKernel;
+import weka.classifiers.functions.supportVector.NormalizedPolyKernel;
 import weka.core.Instances;
 import weka.core.SelectedTag;
 import weka.core.Tag;

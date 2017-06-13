@@ -56,12 +56,12 @@
         <Label fx:id="labelLiczbafoldow" layoutX="152.0" layoutY="194.0" text="Liczba fold'ów:" visible="false" />
         <TextField fx:id="numberoffolds" layoutX="237.0" layoutY="190.0" prefHeight="25.0" prefWidth="33.0" text="10" visible="false" />
         <Button fx:id="btnUruchomKlasyfikatora" layoutX="299.0" layoutY="189.0" mnemonicParsing="false" onAction="#btnUruchomKlasyfikator" prefHeight="25.0" prefWidth="150.0" text="Uruchom klasyfikator" visible="false" />
-        <RadioButton fx:id="wyborA" layoutX="152.0" layoutY="226.0" mnemonicParsing="false" selected="true" text="Próbek deterministyczny" toggleGroup="$probek" visible="false">
+        <RadioButton fx:id="wyborA" layoutX="152.0" layoutY="226.0" mnemonicParsing="false" selected="true" text="Próbek deterministyczny" visible="false">
             <toggleGroup>
                 <ToggleGroup fx:id="probek" />
             </toggleGroup>
         </RadioButton>
-        <RadioButton fx:id="wyborB" layoutX="350.0" layoutY="225.0" mnemonicParsing="false" text="Próbek losowy" visible="false" />
+        <RadioButton fx:id="wyborB" layoutX="350.0" layoutY="225.0" mnemonicParsing="false" text="Próbek losowy" toggleGroup="$probek" visible="false" />
         <Button layoutX="514.0" layoutY="190.0" mnemonicParsing="false" onAction="#CzyscWynik" text="Czyść okno" />
         <Button layoutX="477.0" layoutY="221.0" mnemonicParsing="false" onAction="#btnSaveInTxt" text="Zapisz do pliku txt" />
         <TextArea fx:id="poleWyniku" layoutX="10.0" layoutY="251.0" prefHeight="339.0" prefWidth="580.0" />

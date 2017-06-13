@@ -94,10 +94,10 @@ public class SettingsController implements Initializable {
         dontcheck.getItems().add("False");
         dontcheck.getItems().add("True");
         dontcheck.getSelectionModel().select("False");
-        filtermode.getItems().add("Standaryzuj");
         filtermode.getItems().add("Normalizuj");
+        filtermode.getItems().add("Standaryzuj");
         filtermode.getItems().add("Wyłączony");
-        filtermode.getSelectionModel().select("Standaryzuj");
+        filtermode.getSelectionModel().select("Normalizuj");
         funkcjakernel.getItems().add("Puk");
         funkcjakernel.getItems().add("RBFKernel");
         funkcjakernel.getItems().add("PolyKernel");
